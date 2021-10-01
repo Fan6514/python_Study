@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from optparse import OptionParser
+from log import lg, LEVELS, info, debug, warn, error
 from cli import CLI
 
 class Run(object):
@@ -13,6 +14,7 @@ class Run(object):
         self.args = None
 
         self.parseArgs()
+        self.setup()
         self.begin()
 
     def parseArgs(self):
@@ -24,8 +26,19 @@ class Run(object):
         opts = OptionParser(description=desc, usage=usage, version=version)
         opts.add_option('-c', '--config', action='store',
                         default=False, help='write config to FILE')
+        opts.add_option('-v', '--verbosity', type='choice',
+                        choices=list(LEVELS.keys()), default = 'warn',
+                        help='|'.join(LEVELS.keys()))
         
         self.options, self.args = opts.parse_args()
+
+    def setup(self):
+        "Set up logging verbosity"
+        if self.options.verbosity not in LEVELS.keys():
+            warn('selected verbosity level (%s) is not log level\n'
+                'Please restart system with -v [debug, info, warn, error].\n'
+                % self.options.verbosity)
+        lg.setLogLevel(self.options.verbosity)
     
     def begin(self):
         "Create and run test system"

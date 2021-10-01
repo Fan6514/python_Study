@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 "CLI module"
 
 __author__ = 'fan'
 
-from cmd import Cmd
-from lib.func import load_sysConfig
 import os
+from cmd import Cmd
+from func import load_sysConfig, play_game
+from log import lg, LEVELS, info, debug, warn, error
 
 class CLI(Cmd):
     prompt = 'testSys> '
@@ -20,17 +18,28 @@ class CLI(Cmd):
         self.run()
 
     def run(self):
-        self.cmdloop()
+        while True:
+            try:
+                self.cmdloop()
+                break
+            except KeyboardInterrupt:
+                # Output a message - unless it's also interrupted
+                # pylint: disable=broad-except
+                try:
+                    warn('CLI run() Interrupt')
+                except Exception:
+                    pass
+                # pylint: enable=broad-except
     
     def emptyline(self):
-        "输入回车后不会重复上一次的命令"
+        "Don't repeat last command when you hit return."
         pass
 
     helpInfo = ('You may also send a command to a node using:\n'
                 '  <node> command {args}\n')
 
     def do_help(self, _line):
-        "显示可以使用的命令"
+        "show help info"
         Cmd.do_help(self, _line)
         if _line == '':
             print(self.helpInfo)
@@ -43,7 +52,7 @@ class CLI(Cmd):
                 print(f.read())
     
     def do_ls(self, _line):
-        "显示当前目录下所有文件"
+        "show current file in current dir"
         curDirFiles = [x for x in os.listdir('.') if os.path.isdir(x)]
         print("My file list:")
         for file in curDirFiles:
@@ -52,7 +61,10 @@ class CLI(Cmd):
     def do_load_config(self, _line):
         load_sysConfig(_line)
     
+    def do_play_game(self, _line):
+        play_game()
+    
     def do_exit(self, _line):
-        "退出"
-        print('exit...')
+        "exit system"
+        print('bye!')
         return 'exited by user command'
