@@ -4,7 +4,6 @@ import os
 import json
 from log import lg, LEVELS, info, debug, warn, error
 
-
 # game config file
 USERCONF = os.path.join(os.getcwd(), 'conf/userInfo.json')
 
@@ -23,7 +22,6 @@ def userinfo2dict(usr):
         'cash' : usr.cash
     }
 
-
 class UserInfo(object):
     def __init__(self, userName, level, curExp, 
                 combatEffectiveness, healthPoint, cash):
@@ -41,6 +39,7 @@ class Game(object):
 
         self.initInfo()
         self.run()
+        self.deInitInfo()
 
     def _create_newPlayer(self):
         print('注册：')
@@ -52,20 +51,24 @@ class Game(object):
         if not os.path.exists(self.conf):
             self.saveconfig()
         
-        # read json file
+        # read player info configure
         with open(self.conf, 'r') as conf:
             self.player = json.loads(conf.read(), object_hook=dict2userinfo)
 
     def saveconfig(self):
+        # create a new player
         if self.player is None:
             self.player = self._create_newPlayer()
         
-        # write json file
+        # write player info configure
         with open(self.conf, 'w') as conf:
             conf.write(json.dumps(self.player, default=userinfo2dict))
 
     def initInfo(self):
         self.loadConfig()
+
+    def deInitInfo(self):
+        self.saveconfig()
     
     def run(self):
         pass
