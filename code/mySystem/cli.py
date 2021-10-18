@@ -2,6 +2,7 @@
 
 __author__ = 'fan'
 
+from genericpath import isdir, isfile
 import os
 from cmd import Cmd
 from func import load_sysConfig, play_game
@@ -45,15 +46,15 @@ class CLI(Cmd):
             print(self.helpInfo)
     
     def do_readfile(self, _line):
-        if _line is '':
-            print('Please enter file name.')
-        else:
-            with open(_line, 'r', encoding='utf-8') as f:
-                print(f.read())
+            if isdir(_line):
+                print('{0} is a directory.'.format(_line))
+            elif isfile(_line):
+                with open(_line, 'r', encoding='utf-8') as f:
+                    print(f.read())
     
     def do_ls(self, _line):
         "show current file in current dir"
-        curDirFiles = [x for x in os.listdir('.') if os.path.isdir(x)]
+        curDirFiles = [x for x in os.listdir('.')]
         print("My file list:")
         for file in curDirFiles:
             print(file)

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
+import os
+import psutil
 from optparse import OptionParser
 from log import lg, LEVELS, info, debug, warn, error
 from cli import CLI
@@ -46,5 +49,31 @@ class Run(object):
 
         CLI = CLI()
 
+# 打印当前程序占用的内存大小
+def print_memory_info(name):
+    pid = os.getpid()
+    p = psutil.Process(pid)
+
+    info = p.memory_full_info()
+    MB = 1024 * 1024
+    memory = info.uss / MB
+    print('%s used %d MB' % (name, memory))
+
 if __name__ == "__main__":
-    Run()
+    try:
+        print_memory_info("System start")
+        Run()
+        print_memory_info("System end")
+    except KeyboardInterrupt:
+        info("\n\nKeyboard Interrupt. Shutting down system...\n\n")
+    except Exception:
+        type_, val_, trace_ = sys.exc_info()
+        errorMsg = ( "-"*80 + "\n" +
+                     "Caught exception. Cleaning up...\n\n" +
+                     "%s: %s\n" % ( type_.__name__, val_ ) +
+                     "-"*80 + "\n" )
+        error( errorMsg )
+        # Print stack trace to debug log
+        import traceback
+        stackTrace = traceback.format_exc()
+        debug( stackTrace + "\n" )

@@ -27,10 +27,10 @@ class SysLogger(Logger, object):
         Logger.__init__(self, name)
 
         # create console handler for write log file
-        rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
+        rq = time.strftime('%Y%m%d', time.localtime(time.time()))
         log_path = os.path.join(os.getcwd(), 'logs')
         logfile = os.path.join(log_path, '%s.log' % rq)
-        ch = logging.FileHandler(logfile, mode='w', encoding='UTF-8')
+        ch = logging.FileHandler(logfile, mode='a', encoding='UTF-8')
         # create formatter
         formatter = logging.Formatter(LOGMSGFORMAT)
         # add formatter to ch
