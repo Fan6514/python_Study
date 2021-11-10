@@ -73,4 +73,4 @@ class Game(object):
         self.saveconfig()
     
     def run(self):
-        pass
+        error('self.conf:{}'.format(self.conf))
