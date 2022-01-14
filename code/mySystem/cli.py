@@ -4,12 +4,13 @@ __author__ = 'fan'
 
 from genericpath import isdir, isfile
 import os
+import psutil
 from cmd import Cmd
 from func import load_sysConfig, play_game
 from log import lg, LEVELS, info, debug, warn, error
 
 class CLI(Cmd):
-    prompt = 'testSys> '
+    prompt = 'miniSys> '
     intro = ('\n          ****************************\n'
             '            Welcom to my test system\n'
             '          ****************************\n')
@@ -45,6 +46,14 @@ class CLI(Cmd):
         if _line == '':
             print(self.helpInfo)
     
+    def do_show(self, _line):
+        if _line is None:
+            print('Error: Please enter paramater')
+            return
+        if (_line == 'cpu'):
+            print('processor: ', psutil.cpu_count())
+            print('cpu cores: ', psutil.cpu_count(logical=False))
+
     def do_readfile(self, _line):
             if isdir(_line):
                 print('{0} is a directory.'.format(_line))
